@@ -1,0 +1,40 @@
+[project]
+name = "ten-capital-tech-ip-diligence"
+version = "1.0.0"
+description = "Analyze a pitch deck and produce a one-page Technical & IP Diligence Review PDF for later-stage investors."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.116",
+    "fastapi>=0.115",
+    "httpx>=0.27",
+    "pdfplumber>=0.11",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "pypdf>=5.0",
+    "python-dotenv>=1.0",
+    "python-multipart>=0.0.9",
+    "python-pptx>=1.0",
+    "reportlab>=4.2",
+    "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0"]
+
+[project.scripts]
+tdip = "app.main:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["assets/*.png", "assets/fonts/*.ttf", "web/templates/*.html", "web/public/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120

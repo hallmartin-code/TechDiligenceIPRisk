@@ -1,0 +1,16 @@
+# Never upload local secrets or generated artefacts.
+# ANTHROPIC_API_KEY and TDIP_APP_PASSWORD belong in Railway service variables.
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+output/
+live_llm_out/
+scratch_out/
+logs/
+tests/
+samples/output/

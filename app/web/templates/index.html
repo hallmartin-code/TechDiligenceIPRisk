@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TEN Capital Network — Tech &amp; IP Diligence Review</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
+<link rel="manifest" href="/public/site.webmanifest">
+<meta name="theme-color" content="#0B1526">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950: #0B1526;
+    --navy-900: #101E33;
+    --navy-800: #16283F;
+    --navy-700: #1E354F;
+    --coral: #EE5A4E;
+    --coral-soft: #F0776C;
+    --amber: #F3A22A;
+    --teal: #35BEBB;
+    --ink-100: #F3F6FA;
+    --ink-300: #C4D0E0;
+    --ink-500: #7E90A8;
+    --ink-600: #5C6E86;
+    --font-display: 'Sora', 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  [hidden]{ display: none !important; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    background: var(--navy-950);
+    color: var(--ink-100);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 48px 20px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ambient tri-color glow, echoing the logo's three figures */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(480px 380px at 14% 8%, rgba(238,90,78,0.16), transparent 60%),
+      radial-gradient(480px 380px at 86% 6%, rgba(243,162,42,0.13), transparent 60%),
+      radial-gradient(560px 420px at 50% 100%, rgba(53,190,187,0.14), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .stage{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width: 620px;
+  }
+
+  /* brand lockup */
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom: 28px;
+    padding-left: 4px;
+  }
+  .brand-mark{ width:34px; height:34px; flex-shrink:0; }
+  .brand-word{
+    font-family: var(--font-display);
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:0.04em;
+    line-height:1.15;
+    color: var(--ink-100);
+    text-transform:uppercase;
+  }
+  .brand-word span{
+    display:block;
+    font-weight:600;
+    font-size:10px;
+    letter-spacing:0.22em;
+    color: var(--ink-500);
+    margin-top:2px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+    border: 1px solid var(--navy-700);
+    border-radius: 20px;
+    padding: 44px 44px 36px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.03);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    top:-2px; left:44px; right:44px;
+    height:2px;
+    background: linear-gradient(90deg, var(--coral), var(--amber), var(--teal));
+    border-radius: 2px;
+  }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family: var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color: var(--teal);
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px; height:6px;
+    border-radius:50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 3px rgba(53,190,187,0.18);
+  }
+  .eyebrow.is-working{ color: var(--amber); }
+  .eyebrow.is-working::before{
+    background: var(--amber);
+    box-shadow: 0 0 0 3px rgba(243,162,42,0.18);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  h1{
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight:700;
+    line-height:1.25;
+    margin: 0 0 12px;
+    letter-spacing:-0.01em;
+  }
+  h1 .arrow{ color: var(--ink-500); font-weight:400; margin: 0 4px; }
+  h1 .to{
+    background: linear-gradient(90deg, var(--coral-soft), var(--amber));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lede{
+    color: var(--ink-300);
+    font-size:15px;
+    line-height:1.6;
+    margin: 0 0 32px;
+    max-width: 48ch;
+  }
+
+  /* dropzone */
+  .dropzone{
+    display:block;
+    position:relative;
+    border: 1.5px dashed var(--navy-700);
+    border-radius: 14px;
+    padding: 38px 24px;
+    text-align:center;
+    cursor:pointer;
+    background: rgba(255,255,255,0.015);
+    transition: border-color .18s ease, background .18s ease, transform .18s ease;
+  }
+  .dropzone:hover, .dropzone.is-dragging{
+    border-color: var(--teal);
+    background: rgba(53,190,187,0.05);
+  }
+  .dropzone.is-dragging{ transform: scale(1.01); }
+  .dropzone:active{ transform: scale(0.997); }
+  .dropzone.has-file{
+    border-style: solid;
+    border-color: rgba(53,190,187,0.55);
+    background: rgba(53,190,187,0.04);
+  }
+  .dropzone:focus-within{ outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .dropzone-icon{
+    width:38px; height:38px;
+    margin: 0 auto 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(238,90,78,0.16), rgba(243,162,42,0.16));
+    border: 1px solid var(--navy-700);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dropzone.has-file .dropzone-icon{
+    background: linear-gradient(135deg, rgba(53,190,187,0.22), rgba(53,190,187,0.08));
+  }
+  .dropzone-icon svg{ width:18px; height:18px; }
+
+  .dropzone-title{
+    font-size:15px;
+    font-weight:600;
+    color: var(--ink-100);
+    margin-bottom:6px;
+    overflow-wrap:anywhere;
+  }
+  .dropzone-sub{
+    font-family: var(--font-mono);
+    font-size:11.5px;
+    color: var(--ink-500);
+    letter-spacing:0.01em;
+  }
+  .dropzone-sub b{ color: var(--ink-300); font-weight:500; }
+
+  /* visually hidden but still focusable, so the dropzone works from the keyboard */
+  .file-input{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip: rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  /* optional email */
+  .field{ margin-top: 22px; }
+  .field-label{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    font-weight:600;
+    color: var(--ink-300);
+    margin-bottom:8px;
+  }
+  .field-label .optional{
+    font-family: var(--font-mono);
+    font-size:10.5px;
+    font-weight:400;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color: var(--ink-600);
+  }
+  .input{
+    width:100%;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--navy-700);
+    background: var(--navy-950);
+    color: var(--ink-100);
+    font: 14px var(--font-body);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .input::placeholder{ color: var(--ink-600); }
+  .input:focus{
+    outline:none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(53,190,187,0.15);
+  }
+
+  /* consent */
+  .consent{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    margin-top: 18px;
+    font-size:13px;
+    line-height:1.55;
+    color: var(--ink-300);
+    cursor:pointer;
+  }
+  .consent input{
+    appearance:none;
+    -webkit-appearance:none;
+    flex-shrink:0;
+    width:18px; height:18px;
+    margin: 2px 0 0;
+    border-radius:5px;
+    border: 1.5px solid var(--ink-600);
+    background: var(--navy-950);
+    display:grid;
+    place-content:center;
+    cursor:pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .consent input::before{
+    content:"";
+    width:10px; height:10px;
+    transform: scale(0);
+    transition: transform .12s ease;
+    background: var(--navy-950);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+  .consent input:checked{ background: var(--teal); border-color: var(--teal); }
+  .consent input:checked::before{ transform: scale(1); }
+  .consent input:focus-visible{ outline: 2px solid var(--teal); outline-offset: 2px; }
+  .consent strong{ color: var(--ink-100); font-weight:600; }
+
+  /* CTA */
+  .cta{
+    display:block;
+    width:100%;
+    margin-top: 22px;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, var(--coral) 0%, var(--coral-soft) 45%, var(--amber) 100%);
+    color: #17130E;
+    font-family: var(--font-display);
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.01em;
+    text-align:center;
+    text-decoration:none;
+    cursor:pointer;
+    transition: filter .15s ease, transform .15s ease;
+    box-shadow: 0 10px 24px -10px rgba(238,90,78,0.45);
+  }
+  .cta:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+  .cta:active{ transform: translateY(0); }
+  .cta:focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+  .cta:disabled{ filter: saturate(.5) brightness(.8); cursor: progress; transform:none; }
+
+  .btn-ghost{
+    padding: 15px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--navy-700);
+    background: transparent;
+    color: var(--ink-100);
+    font-family: var(--font-display);
+    font-weight:600;
+    font-size:14px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .btn-ghost:hover{ border-color: var(--teal); background: rgba(53,190,187,0.05); }
+  .btn-ghost:focus-visible{ outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  /* alert */
+  .alert{
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(238,90,78,0.45);
+    background: rgba(238,90,78,0.08);
+    color: #FFC9C3;
+    font-size:13.5px;
+    line-height:1.5;
+  }
+
+  /* progress */
+  .progress-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .progress-title{ font-family: var(--font-display); font-weight:600; font-size:17px; }
+  .mono{ font-family: var(--font-mono); font-size:12px; color: var(--ink-500); }
+  .progress-track{
+    height:6px;
+    border-radius:6px;
+    background: var(--navy-950);
+    border: 1px solid var(--navy-700);
+    overflow:hidden;
+  }
+  .progress-bar{
+    height:100%;
+    width:4%;
+    border-radius:6px;
+    background: linear-gradient(90deg, var(--coral), var(--amber), var(--teal));
+    background-size: 620px 100%;
+    transition: width .6s ease;
+  }
+  .steps{ list-style:none; margin: 24px 0 0; padding:0; display:grid; gap:13px; }
+  .step{ display:flex; align-items:center; gap:12px; font-size:14px; color: var(--ink-500); }
+  .step-dot{
+    width:22px; height:22px;
+    flex-shrink:0;
+    border-radius:50%;
+    border: 1.5px solid var(--navy-700);
+    display:grid;
+    place-content:center;
+    font-family: var(--font-mono);
+    font-size:10.5px;
+    color: var(--ink-600);
+    transition: all .2s ease;
+  }
+  .step.is-active{ color: var(--ink-100); }
+  .step.is-active .step-dot{
+    border-color: var(--amber);
+    color: var(--amber);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .step.is-done{ color: var(--ink-300); }
+  .step.is-done .step-dot{ background: var(--teal); border-color: var(--teal); color: var(--navy-950); }
+  .progress-note{ margin: 24px 0 0; font-size:12.5px; line-height:1.6; color: var(--ink-500); }
+
+  /* result */
+  .result-company{
+    font-family: var(--font-display);
+    font-size:22px;
+    font-weight:700;
+    line-height:1.3;
+    margin: 0 0 20px;
+    overflow-wrap:anywhere;
+    outline:none;
+  }
+  .metrics{ display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
+  .metric{
+    min-width:0;
+    padding: 14px 16px;
+    border-radius:12px;
+    border: 1px solid var(--navy-700);
+    background: var(--navy-950);
+  }
+  .metric.wide{ grid-column: 1 / -1; }
+  .metric-label{
+    font-family: var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color: var(--ink-500);
+    margin-bottom:6px;
+  }
+  .metric-value{ font-family: var(--font-display); font-weight:700; font-size:20px; line-height:1.2; }
+  .metric-value small{ font-size:12px; font-weight:600; color: var(--ink-500); margin-left:4px; }
+  .tone-good{ color: var(--teal); }
+  .tone-mid{ color: var(--amber); }
+  .tone-bad{ color: var(--coral-soft); }
+  .flag-line{ margin: 16px 0 0; font-size:13px; color: var(--ink-300); }
+  .flag-line b{ color: var(--coral-soft); font-weight:600; }
+  .actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .actions .cta{ margin-top:0; flex: 1 1 240px; width:auto; }
+  .actions .btn-ghost{ flex: 1 1 180px; }
+  .result-note{ margin: 16px 0 0; font-size:12.5px; line-height:1.6; color: var(--ink-500); }
+  .result-note a{ color: var(--ink-300); text-underline-offset: 3px; }
+  .result-note a:hover{ color: var(--teal); }
+
+  /* footnote / disclosure */
+  .disclosure{
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--navy-700);
+    font-size: 12px;
+    line-height:1.6;
+    color: var(--ink-500);
+  }
+  .disclosure code{
+    font-family: var(--font-mono);
+    background: var(--navy-950);
+    border: 1px solid var(--navy-700);
+    color: var(--ink-300);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 11.5px;
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing:0.08em;
+    color: var(--ink-600);
+    text-transform:uppercase;
+  }
+
+  @keyframes pulse{
+    0%, 100%{ box-shadow: 0 0 0 3px rgba(243,162,42,0.16); }
+    50%{ box-shadow: 0 0 0 7px rgba(243,162,42,0.04); }
+  }
+  @keyframes blink{ 50%{ opacity:.35; } }
+
+  @media (max-width: 480px){
+    .card{ padding: 32px 24px 28px; }
+    .card::after{ left:24px; right:24px; }
+    h1{ font-size:23px; }
+    .metrics{ grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body data-max-mb="{{MAX_MB}}">
+
+<div class="stage">
+
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M50 6 C64 6 74 16 74 16" stroke="var(--amber)" stroke-width="11" stroke-linecap="round" fill="none"/>
+      <path d="M76 66 C76 82 63 92 63 92" stroke="var(--teal)" stroke-width="11" stroke-linecap="round" fill="none"/>
+      <path d="M24 66 C24 82 37 92 37 92" stroke="var(--coral)" stroke-width="11" stroke-linecap="round" fill="none" transform="rotate(180 50 79)"/>
+      <circle cx="50" cy="20" r="11" fill="var(--amber)"/>
+      <circle cx="78" cy="68" r="11" fill="var(--teal)"/>
+      <circle cx="22" cy="68" r="11" fill="var(--coral)"/>
+    </svg>
+    <div class="brand-word">TEN Capital<span>Network</span></div>
+  </div>
+
+  <main class="card">
+    <div class="eyebrow" id="eyebrow">Tech &amp; IP Diligence</div>
+    <h1>Pitch Deck<span class="arrow">&rarr;</span><span class="to">Diligence Review</span></h1>
+    <p class="lede">Upload a pitch deck and get a one-page Technical &amp; IP Diligence Review covering architecture,
+      development maturity, IP ownership and deal-closing risk, analyzed by {{ENGINE_LABEL}} with every finding
+      traced to its slide.</p>
+
+    <!-- 1. Upload -->
+    <form id="tool-form" novalidate>
+      <label class="dropzone" id="dropzone" for="deck-upload">
+        <div class="dropzone-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-100)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+            <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/>
+          </svg>
+        </div>
+        <div class="dropzone-title" id="dz-title">Click to choose or drop a deck</div>
+        <div class="dropzone-sub" id="dz-sub"><b>.pdf</b> &middot; <b>.pptx</b> &middot; <b>.ppt</b> &nbsp;·&nbsp; up to {{MAX_MB}}&nbsp;MB</div>
+        <input class="file-input" type="file" id="deck-upload" name="deck" accept=".pdf,.pptx,.ppt" required>
+      </label>
+
+      <div class="field">
+        <label class="field-label" for="user">Your email <span class="optional">Optional</span></label>
+        <input class="input" id="user" name="user" type="email" autocomplete="email" placeholder="analyst@fund.com">
+      </div>
+
+      <label class="consent" for="consent">
+        <input id="consent" name="consent" type="checkbox" value="granted">
+        <span><strong>Share the result with TEN Capital.</strong> Sends a structured record of this analysis
+          (company, scores, red flags, diligence questions and your email). Leave unchecked to keep it private.</span>
+      </label>
+
+      <button class="cta" id="run" type="submit">Generate diligence review</button>
+    </form>
+
+    <!-- 2. Progress -->
+    <section id="progress" hidden aria-live="polite">
+      <div class="progress-head">
+        <span class="progress-title" id="progress-label">Queued…</span>
+        <span class="mono" id="progress-time" aria-label="Elapsed time">0:00</span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+      <ol class="steps">
+        <li class="step"><span class="step-dot">1</span>Reading deck</li>
+        <li class="step"><span class="step-dot">2</span>Analyzing technology and IP</li>
+        <li class="step"><span class="step-dot">3</span>Validating analysis</li>
+        <li class="step"><span class="step-dot">4</span>Generating one-page PDF</li>
+        <li class="step"><span class="step-dot">5</span>Preparing TEN Capital record</li>
+      </ol>
+      <p class="progress-note">{{DURATION_NOTE}} Keep this tab open; the PDF downloads automatically when it is ready.</p>
+    </section>
+
+    <!-- 3. Result -->
+    <section id="result" hidden aria-live="polite">
+      <h2 class="result-company" id="r-company" tabindex="-1"></h2>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Tech &amp; IP score</div><div class="metric-value" id="r-score"></div></div>
+        <div class="metric"><div class="metric-label">Evidence confidence</div><div class="metric-value" id="r-confidence"></div></div>
+        <div class="metric"><div class="metric-label">Technical position</div><div class="metric-value" id="r-technical"></div></div>
+        <div class="metric"><div class="metric-label">IP position</div><div class="metric-value" id="r-ip"></div></div>
+        <div class="metric wide"><div class="metric-label">Transaction readiness</div><div class="metric-value" id="r-readiness"></div></div>
+      </div>
+      <p class="flag-line" id="r-flags"></p>
+      <div class="actions">
+        <a class="cta" id="r-pdf" href="#" download>Download PDF again</a>
+        <button class="btn-ghost" id="r-reset" type="button">Analyze another deck</button>
+      </div>
+      <p class="result-note">Check your downloads for the result. Also available:
+        <a id="r-analysis" href="#" download>structured analysis (JSON)</a> &middot;
+        <a id="r-record" href="#" download>TEN Capital record (JSON)</a>.
+        <span id="r-share"></span></p>
+    </section>
+
+    <div class="alert" id="error" role="alert" hidden></div>
+
+    <div class="disclosure">
+      {{DATA_NOTE}} Nothing is shared with TEN Capital unless you tick the box above, and uploaded decks and reports
+      are held on the server only temporarily. Deck-based screening only; not legal advice or a security audit.
+    </div>
+  </main>
+
+  <footer>Powered by TEN Capital Network</footer>
+
+</div>
+
+<script>
+(() => {
+  const MAX_MB = Number(document.body.dataset.maxMb) || 50;
+  const ALLOWED = [".pdf", ".pptx", ".ppt"];
+  const RUN_LABEL = "Generate diligence review";
+  const $ = (id) => document.getElementById(id);
+
+  const form = $("tool-form");
+  const input = $("deck-upload");
+  const dropzone = $("dropzone");
+  const dzTitle = $("dz-title");
+  const dzSub = $("dz-sub");
+  const dzSubDefault = dzSub.innerHTML;
+  const runButton = $("run");
+  const eyebrow = $("eyebrow");
+  const progress = $("progress");
+  const result = $("result");
+  const alertBox = $("error");
+  const steps = [...document.querySelectorAll(".step")];
+  let clock = null;
+  let startedAt = 0;
+
+  const formatSize = (bytes) =>
+    bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
+  function showError(message) { alertBox.textContent = message; alertBox.hidden = false; }
+  function clearError() { alertBox.hidden = true; alertBox.textContent = ""; }
+
+  function validateFile(file) {
+    if (!file) return "Choose a pitch deck to analyze.";
+    const name = file.name.toLowerCase();
+    if (!ALLOWED.some((ext) => name.endsWith(ext))) return "Upload a PDF, PPTX or PPT file.";
+    if (file.size === 0) return "That file is empty.";
+    if (file.size > MAX_MB * 1048576) return `That file is ${formatSize(file.size)}; the limit is ${MAX_MB} MB.`;
+    return null;
+  }
+
+  function renderFile() {
+    const file = input.files[0];
+    if (!file) {
+      dropzone.classList.remove("has-file");
+      dzTitle.textContent = "Click to choose or drop a deck";
+      dzSub.innerHTML = dzSubDefault;
+      return;
+    }
+    dropzone.classList.add("has-file");
+    dzTitle.textContent = file.name;
+    dzSub.textContent = `${formatSize(file.size)} · click to replace`;
+    const problem = validateFile(file);
+    problem ? showError(problem) : clearError();
+  }
+
+  input.addEventListener("change", renderFile);
+  ["dragenter", "dragover"].forEach((type) => dropzone.addEventListener(type, (event) => {
+    event.preventDefault();
+    dropzone.classList.add("is-dragging");
+  }));
+  ["dragleave", "dragend", "drop"].forEach((type) => dropzone.addEventListener(type, (event) => {
+    event.preventDefault();
+    dropzone.classList.remove("is-dragging");
+  }));
+  dropzone.addEventListener("drop", (event) => {
+    if (event.dataTransfer && event.dataTransfer.files.length) {
+      input.files = event.dataTransfer.files;
+      renderFile();
+    }
+  });
+  // A deck dropped outside the zone should not navigate away from the page.
+  ["dragover", "drop"].forEach((type) => window.addEventListener(type, (event) => event.preventDefault()));
+
+  function setWorking(isWorking) {
+    eyebrow.textContent = isWorking ? "Analyzing" : "Tech & IP Diligence";
+    eyebrow.classList.toggle("is-working", isWorking);
+  }
+
+  function setStep(step, label) {
+    steps.forEach((el, index) => {
+      el.classList.toggle("is-done", index < step - 1);
+      el.classList.toggle("is-active", index === step - 1);
+    });
+    $("progress-label").textContent = label;
+    const width = step > steps.length ? 100 : Math.max(4, ((step - 0.5) / steps.length) * 100);
+    $("progress-bar").style.width = `${width}%`;
+  }
+
+  function tick() {
+    const seconds = Math.floor((Date.now() - startedAt) / 1000);
+    $("progress-time").textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  }
+
+  function download(url) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  function setMetric(id, value, suffix, tone) {
+    const el = $(id);
+    el.textContent = value;
+    if (suffix) {
+      const small = document.createElement("small");
+      small.textContent = suffix;
+      el.appendChild(small);
+    }
+    el.className = `metric-value ${tone}`;
+  }
+
+  const toneFor = (value, good, mid) => (good.includes(value) ? "tone-good" : mid.includes(value) ? "tone-mid" : "tone-bad");
+  const numberTone = (value, good, mid) => (value >= good ? "tone-good" : value >= mid ? "tone-mid" : "tone-bad");
+
+  function finish(job) {
+    clearInterval(clock);
+    setStep(steps.length + 1, "Complete");
+    const r = job.result;
+    $("r-company").textContent = r.company;
+    setMetric("r-score", String(r.overall_score), `±${r.uncertainty}`, numberTone(r.overall_score, 70, 45));
+    setMetric("r-confidence", String(r.evidence_confidence), "/100", numberTone(r.evidence_confidence, 60, 40));
+    setMetric("r-technical", r.technical_position, "", toneFor(r.technical_position, ["Strong", "Adequate"], ["Mixed"]));
+    setMetric("r-ip", r.ip_position, "", toneFor(r.ip_position, ["Strong", "Adequate"], ["Mixed"]));
+    setMetric("r-readiness", r.transaction_readiness, "",
+      toneFor(r.transaction_readiness, ["Ready", "Mostly Ready"], ["Material Diligence Required"]));
+
+    const flags = $("r-flags");
+    flags.textContent = "";
+    const critical = document.createElement("b");
+    critical.textContent = `${r.critical_flags} critical`;
+    flags.append(critical, ` · ${r.high_flags} high-severity red flags identified`);
+
+    $("r-share").textContent = r.transmission;
+    $("r-pdf").href = job.downloads.pdf;
+    $("r-analysis").href = job.downloads.analysis;
+    $("r-record").href = job.downloads.record;
+
+    setWorking(false);
+    eyebrow.textContent = "Review ready";
+    progress.hidden = true;
+    result.hidden = false;
+    $("r-company").focus();
+    download(job.downloads.pdf);
+  }
+
+  function fail(error) {
+    clearInterval(clock);
+    setWorking(false);
+    progress.hidden = true;
+    result.hidden = true;
+    form.hidden = false;
+    runButton.disabled = false;
+    runButton.textContent = RUN_LABEL;
+    showError(error && error.message ? error.message : String(error));
+  }
+
+  async function poll(statusUrl, failures = 0) {
+    let job;
+    try {
+      const response = await fetch(statusUrl, { cache: "no-store" });
+      if (response.status === 404) {
+        throw new Error("This analysis is no longer available (the server may have restarted). Please run it again.");
+      }
+      job = await response.json();
+      if (!response.ok) throw new Error(job.detail || "Status check failed.");
+    } catch (error) {
+      const transient = error instanceof TypeError || error instanceof SyntaxError;
+      if (transient && failures < 5) {
+        setTimeout(() => poll(statusUrl, failures + 1), 4000);
+        return;
+      }
+      fail(error);
+      return;
+    }
+    if (job.status === "error") {
+      fail(new Error(job.error || "The analysis failed."));
+      return;
+    }
+    if (job.status !== "done") {
+      setStep(job.step || 0, job.step ? `${job.step_label}…` : "Queued…");
+      setTimeout(() => poll(statusUrl), 2000);
+      return;
+    }
+    finish(job);
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearError();
+    const problem = validateFile(input.files[0]);
+    if (problem) {
+      showError(problem);
+      input.focus();
+      return;
+    }
+    const data = new FormData(form);
+    runButton.disabled = true;
+    runButton.textContent = "Uploading…";
+    try {
+      const response = await fetch("/api/jobs", { method: "POST", body: data });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.detail || `Upload failed (HTTP ${response.status}).`);
+      form.hidden = true;
+      progress.hidden = false;
+      setWorking(true);
+      setStep(0, "Queued…");
+      startedAt = Date.now();
+      tick();
+      clock = setInterval(tick, 1000);
+      poll(body.status_url);
+    } catch (error) {
+      fail(error);
+    }
+  });
+
+  $("r-reset").addEventListener("click", () => {
+    form.reset();
+    renderFile();
+    clearError();
+    result.hidden = true;
+    form.hidden = false;
+    runButton.disabled = false;
+    runButton.textContent = RUN_LABEL;
+    setWorking(false);
+    input.focus();
+  });
+})();
+</script>
+</body>
+</html>

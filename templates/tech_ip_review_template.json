@@ -1,0 +1,210 @@
+{
+  "template": "technical_ip_diligence_review",
+  "version": "1.0",
+  "description": "Structure of the one-page Technical & IP Diligence Review. Placeholders only; field paths refer to the DiligenceAnalysis JSON (app/models/schemas.py). Human-readable version: tech_ip_review_template.md.",
+  "page": {
+    "size": "US Letter",
+    "orientation": "portrait",
+    "max_pages": 1,
+    "margins_inches": {"left": 0.42, "right": 0.42, "top": 0.34, "bottom": 0.52},
+    "font_family": "Open Sans",
+    "font_fallback": "Helvetica",
+    "header": "none",
+    "footer": {
+      "pattern": "Technical & IP Diligence Review          {{PAGE#}}          Compiled on {{Month D, YYYY}} by TEN Capital Network    [logo]",
+      "font_size_pt": 7,
+      "alignment": "center",
+      "logo": {"file": "TEN_Capital_logo_footer.png", "width_pt": 48, "height_pt": 18}
+    }
+  },
+  "empty_values": {
+    "field_not_provided": "NOT PROVIDED",
+    "snapshot_cell_not_provided": "Not provided",
+    "inferred_marker": "(inferred)",
+    "unverified_score_marker": "unverified",
+    "truncation_marker": "…"
+  },
+  "sections": [
+    {
+      "id": "title_band",
+      "order": 0,
+      "layout": "band_with_two_tiles",
+      "fields": [
+        {"label": "Eyebrow", "fixed_text": "TECHNICAL & IP DILIGENCE REVIEW"},
+        {"label": "Company", "source": "company.name.value", "max_chars": 140, "required": true},
+        {"label": "Meta line", "pattern": "{{company.sector.value}} · {{company.stage.value}} · Source: {{source.filename}} ({{source.slide_count}} slides) · {{generated_at}}", "max_chars": 150},
+        {"label": "TECH & IP SCORE", "pattern": "{{scores.overall_score}} ±{{scores.uncertainty}}", "range": [0, 100], "required": true},
+        {"label": "EVIDENCE CONFIDENCE", "pattern": "{{evidence_confidence}}/100", "range": [0, 100], "required": true}
+      ]
+    },
+    {
+      "id": "company_snapshot",
+      "order": 1,
+      "title": "COMPANY SNAPSHOT",
+      "layout": "grid_2x4",
+      "fields": [
+        {"label": "Sector", "source": "company.sector", "max_chars": 48},
+        {"label": "Stage", "source": "company.stage", "max_chars": 48},
+        {"label": "Revenue", "source": "company.revenue", "max_chars": 48},
+        {"label": "Growth", "source": "company.growth", "max_chars": 48},
+        {"label": "Gross Margin", "source": "company.gross_margin", "max_chars": 48},
+        {"label": "Customers", "pattern": "{{company.customers}} · {{company.customer_concentration}}", "max_chars": 60},
+        {"label": "Funding / Raise", "pattern": "{{company.raise_amount}} · {{company.funding_to_date}}", "max_chars": 60},
+        {"label": "Development Maturity", "source": "development_maturity.level", "max_chars": 48}
+      ],
+      "json_only_fields": ["company.name", "company.product", "company.engineering_team"],
+      "subsections": [
+        {
+          "id": "score_strip",
+          "layout": "row_of_10_cells",
+          "cell_pattern": "{{short_label}} / {{score}}/5 · {{weight}}%",
+          "source": "scores.categories[]",
+          "cells": [
+            {"short_label": "Architecture", "category": "technical_architecture", "weight": 0.15},
+            {"short_label": "Maturity", "category": "development_maturity", "weight": 0.10},
+            {"short_label": "Scalability", "category": "scalability", "weight": 0.10},
+            {"short_label": "Eng. Org", "category": "engineering_organization", "weight": 0.10},
+            {"short_label": "Docs", "category": "technical_documentation", "weight": 0.05},
+            {"short_label": "Security", "category": "cybersecurity_compliance", "weight": 0.10},
+            {"short_label": "IP Owner.", "category": "ip_ownership", "weight": 0.15},
+            {"short_label": "IP Defens.", "category": "ip_defensibility", "weight": 0.10},
+            {"short_label": "3rd Party", "category": "third_party_dependency", "weight": 0.05},
+            {"short_label": "Exit Ready", "category": "exit_readiness", "weight": 0.10}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "technical_assessment",
+      "order": 2,
+      "title": "TECHNICAL ASSESSMENT",
+      "layout": "left_column_labeled_rows",
+      "row_pattern": "{{label}}: {{text}}",
+      "fields": [
+        {"label": "Architecture", "source": "technical_architecture.summary", "max_chars": [240, 95], "required": true},
+        {"label": "Development maturity", "pattern": "{{development_maturity.level}} — {{development_maturity.rationale}}", "max_chars": [240, 95], "required": true},
+        {"label": "Scalability", "source": "scalability.summary", "max_chars": [240, 95], "required": true},
+        {"label": "Engineering org", "source": "engineering_organization.summary", "max_chars": [240, 95], "required": true},
+        {"label": "Security / compliance", "source": "cybersecurity.summary", "max_chars": [240, 140], "optional": true, "dropped_from_density_level": 3},
+        {"label": "AI / data", "source": "ai_data.proprietary_assessment", "max_chars": [240, 170], "optional": true, "condition": "ai_data.applicable == true", "dropped_from_density_level": 2}
+      ]
+    },
+    {
+      "id": "intellectual_property",
+      "order": 3,
+      "title": "INTELLECTUAL PROPERTY",
+      "layout": "right_column_labeled_rows",
+      "row_pattern": "{{label}}: {{text}}",
+      "fields": [
+        {"label": "Core IP", "source": "intellectual_property.core_ip", "max_chars": [190, 80], "required": true},
+        {"label": "Ownership", "source": "intellectual_property.ownership", "max_chars": [190, 80], "required": true},
+        {"label": "Defensibility", "source": "intellectual_property.defensibility", "max_chars": [190, 80], "required": true},
+        {"label": "Patents", "source": "intellectual_property.patents", "max_chars": [190, 80], "required": true},
+        {"label": "Trade secrets", "source": "intellectual_property.trade_secrets", "max_chars": [190, 80], "required": true},
+        {"label": "Software / data", "source": "intellectual_property.software_data", "max_chars": [190, 80], "required": true},
+        {"label": "Third-party", "source": "intellectual_property.third_party", "item_pattern": "{{name}} ({{dependency_type}}, {{criticality}})", "max_chars": [190, 80], "required": true}
+      ]
+    },
+    {
+      "id": "top_risks",
+      "order": 4,
+      "title": "TOP RISKS",
+      "layout": "table",
+      "source": "red_flags[]",
+      "rows": {"min": 3, "max": 5, "sort": "severity, then classification (FACT, INFERENCE, NOT PROVIDED), then category weight"},
+      "columns": [
+        {"header": "SEVERITY", "width_pt": 52, "pattern": "{{severity}}", "style": "chip colored by severity"},
+        {"header": "ISSUE & EVIDENCE", "width_pt": 262, "pattern": "{{issue}} / {{classification}} · {{evidence}}", "max_chars": {"issue": [110, 80], "evidence": [130, 0]}},
+        {"header": "BUSINESS CONSEQUENCE & MITIGATION", "width_pt": "remainder", "pattern": "{{business_consequence}} Mitigate: {{mitigation}}", "max_chars": {"business_consequence": [150, 80], "mitigation": [110, 0]}}
+      ],
+      "top_up_rule": "If fewer than 3 flags, add LOW EVIDENCE_GAP items from missing_information[].",
+      "empty_row": ["—", "No material red flags identified from deck evidence.", "Verify deck claims against the data room."],
+      "json_record_fields": ["code", "category", "issue", "severity", "classification", "evidence", "slides", "business_consequence", "diligence_question", "mitigation", "exposures"]
+    },
+    {
+      "id": "exit_deal_closing_exposure",
+      "order": 5,
+      "title": "EXIT / DEAL-CLOSING EXPOSURE",
+      "layout": "left_column_summary_and_bullets",
+      "fields": [
+        {"label": "Summary", "source": "exit_readiness.summary", "max_chars": [220, 90], "required": true},
+        {"label": "Exposure bullets", "source": "exit_readiness.exposures[]", "severities": ["CRITICAL", "HIGH", "MEDIUM"], "items": [4, 2], "item_pattern": "• {{issue}} › {{exposure_types[0..2]}}", "max_chars": {"issue": [80, 50]}}
+      ],
+      "summary_patterns": {
+        "critical": "{{n}} issue(s) likely to become closing conditions, escrow or indemnity items: {{issues}}.",
+        "high_only": "No closing blockers identified from the deck; high-severity items likely to drive diligence questions and reps & warranties: {{issues}}.",
+        "none": "No critical or high-severity transaction exposures identified from deck evidence."
+      }
+    },
+    {
+      "id": "priority_diligence_questions",
+      "order": 6,
+      "title": "PRIORITY DILIGENCE QUESTIONS",
+      "layout": "right_column_numbered_list",
+      "source": "diligence_questions[0..4]",
+      "items": 5,
+      "item_pattern": "{{priority}}. {{question}} [{{audience}}]",
+      "max_chars": {"question": [180, 110]},
+      "audiences": ["Investor", "Technical advisor", "IP counsel", "CTO", "CISO", "Acquirer"],
+      "priority_order": ["CRITICAL flag questions", "HIGH flag questions", "model-raised questions", "MEDIUM flag questions", "baseline questions for categories scoring <= 3", "LOW flag questions", "remaining baseline questions"]
+    },
+    {
+      "id": "investor_conclusion",
+      "order": 7,
+      "title": "INVESTOR CONCLUSION",
+      "layout": "tinted_box_with_three_chips",
+      "fields": [
+        {"label": "TECHNICAL POSITION", "source": "investor_conclusion.technical_position", "enum": "position_rating", "required": true},
+        {"label": "IP POSITION", "source": "investor_conclusion.ip_position", "enum": "position_rating", "required": true},
+        {"label": "TRANSACTION READINESS", "source": "investor_conclusion.transaction_readiness", "enum": "transaction_readiness", "required": true},
+        {"label": "Conclusion", "source": "investor_conclusion.summary", "sentences": [2, 3], "max_chars": [520, 320], "required": true}
+      ],
+      "summary_sentence_patterns": [
+        "On deck evidence, {{company}} rates {{technical_position}} on technology and {{ip_position}} on IP (score {{overall_score}} ± {{uncertainty}}; evidence confidence {{evidence_confidence}}/100).",
+        "{{most material issue and its transaction consequence}}",
+        "Transaction readiness: {{transaction_readiness}}."
+      ]
+    },
+    {
+      "id": "evidence_basis",
+      "order": 8,
+      "layout": "fine_print",
+      "pattern": "Evidence basis: {{FACT}} facts · {{INFERENCE}} inferences · {{ASSUMPTION}} assumptions · {{NOT PROVIDED}} items not provided · {{critical}} critical / {{high}} high flags ({{total}} total in JSON) · slide refs S# · engine: {{engine_label}}. {{disclaimer}}",
+      "disclaimer": "Deck-based screening only; not legal advice, a patent-validity or freedom-to-operate opinion, or a security audit. Verify all findings against the data room."
+    }
+  ],
+  "density_levels": [
+    {"level": 0, "body_pt": 7.3, "technical_chars": 240, "ip_chars": 190, "risks": 5, "questions_chars": 180, "conclusion_chars": 520},
+    {"level": 1, "body_pt": 7.1, "technical_chars": 200, "ip_chars": 160, "risks": 5, "questions_chars": 165, "conclusion_chars": 480},
+    {"level": 2, "body_pt": 6.9, "technical_chars": 170, "ip_chars": 135, "risks": 4, "questions_chars": 150, "conclusion_chars": 440},
+    {"level": 3, "body_pt": 6.7, "technical_chars": 140, "ip_chars": 115, "risks": 4, "questions_chars": 135, "conclusion_chars": 400},
+    {"level": 4, "body_pt": 6.5, "technical_chars": 115, "ip_chars": 95, "risks": 3, "questions_chars": 120, "conclusion_chars": 360},
+    {"level": 5, "body_pt": 6.3, "technical_chars": 95, "ip_chars": 80, "risks": 3, "questions_chars": 110, "conclusion_chars": 320}
+  ],
+  "compression_priority": ["compress repetitive wording", "shorten lower-priority observations", "preserve highest-risk issues (min 3)", "preserve 5 diligence questions", "preserve investor conclusion"],
+  "enums": {
+    "classification": ["FACT", "INFERENCE", "ASSUMPTION", "NOT PROVIDED"],
+    "severity": {"CRITICAL": "#B42318", "HIGH": "#E85D26", "MEDIUM": "#A86B12", "LOW": "#5B7083"},
+    "category_score": {"5": "#1F7A4D", "4": "#3F8A3A", "3": "#A86B12", "2": "#D9531E", "1": "#B42318", "unverified": "#8A94A3"},
+    "evidence_status": ["SUPPORTED", "LIMITED", "NOT PROVIDED"],
+    "maturity_level": ["Experimental", "Prototype", "Early Production", "Production", "Scaled Production", "Enterprise-Grade", "Not determinable"],
+    "position_rating": {"Strong": "#1F7A4D", "Adequate": "#3F8A3A", "Mixed": "#A86B12", "Weak": "#D9531E", "High Risk": "#B42318"},
+    "transaction_readiness": {"Ready": "#1F7A4D", "Mostly Ready": "#3F8A3A", "Material Diligence Required": "#A86B12", "Significant Remediation Required": "#B42318"},
+    "transaction_exposure": ["Diligence question", "Closing condition", "Reps & warranties", "Indemnity", "Escrow / holdback", "Purchase-price adjustment", "Delay / termination risk"]
+  },
+  "palette": {
+    "navy": "#1B2A4A",
+    "navy_light": "#26395F",
+    "orange": "#E85D26",
+    "light_blue": "#C8D6E8",
+    "background": "#F7F9FC",
+    "tint": "#EEF3F9",
+    "ink": "#1F2733",
+    "muted": "#5B6573",
+    "rule": "#D5DDE8"
+  },
+  "companion_outputs": {
+    "analysis_json": ["company", "source_evidence", "technical_architecture", "development_maturity", "engineering_organization", "technical_documentation", "cybersecurity", "intellectual_property", "ai_data", "third_party_dependencies", "scalability", "exit_readiness", "scores", "evidence_confidence", "red_flags", "diligence_questions", "assumptions", "missing_information", "investor_conclusion", "warnings"],
+    "ten_capital_record": ["user", "company", "sector", "stage", "raise_amount", "revenue", "growth", "gross_margin", "overall_technical_ip_score", "overall_score_uncertainty", "evidence_confidence", "technical_architecture_rating", "development_maturity_rating", "development_maturity_level", "scalability_rating", "engineering_organization_rating", "technical_documentation_rating", "cybersecurity_rating", "ip_ownership_rating", "ip_defensibility_rating", "third_party_dependency_rating", "transaction_readiness_rating", "transaction_readiness", "technical_position", "ip_position", "critical_red_flags", "high_severity_red_flags", "top_diligence_questions", "major_missing_information", "summary_findings", "recommended_diligence_areas", "consent_status", "transmission_status", "report_created_at", "source_file", "source_sha256", "analysis_engine"]
+  }
+}
