@@ -543,8 +543,7 @@
 
       <label class="consent" for="consent">
         <input id="consent" name="consent" type="checkbox" value="granted">
-        <span><strong>Share the result with TEN Capital.</strong> Sends a structured record of this analysis
-          (company, scores, red flags, diligence questions and your email). Leave unchecked to keep it private.</span>
+        <span>{{CONSENT_TEXT}}</span>
       </label>
 
       <button class="cta" id="run" type="submit">Generate diligence review</button>
@@ -591,8 +590,8 @@
     <div class="alert" id="error" role="alert" hidden></div>
 
     <div class="disclosure">
-      {{DATA_NOTE}} Nothing is shared with TEN Capital unless you tick the box above, and uploaded decks and reports
-      are held on the server only temporarily. Deck-based screening only; not legal advice or a security audit.
+      {{DATA_NOTE}} {{SHARING_NOTE}} Uploaded decks and reports are held on the server only temporarily.
+      Deck-based screening only; not legal advice or a security audit.
     </div>
   </main>
 

@@ -72,7 +72,8 @@ def _safe_filename(name: str) -> str:
     return (cleaned or "deck")[-120:]
 
 
-def create_app(settings: Settings | None = None, transport: httpx.BaseTransport | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, transport: httpx.BaseTransport | None = None,
+               email_transport: httpx.BaseTransport | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level, settings.log_file)
     app = FastAPI(title="Technical & IP Diligence Review", docs_url=None, redoc_url=None, openapi_url=None)
@@ -120,7 +121,8 @@ def create_app(settings: Settings | None = None, transport: httpx.BaseTransport 
         job.status = "running"
         try:
             job.run = run_diligence(deck_path, settings=settings, user=user, consent=consent,
-                                    output_dir=job.directory / "out", transport=transport, progress=progress)
+                                    output_dir=job.directory / "out", transport=transport, progress=progress,
+                                    email_transport=email_transport)
             job.status, job.step_label = "done", "Complete"
         except DeckIngestionError as exc:
             job.status, job.error = "error", str(exc)
@@ -150,6 +152,18 @@ def create_app(settings: Settings | None = None, transport: httpx.BaseTransport 
         "{{DATA_NOTE}}": ("Your deck is processed on this server and its contents are sent to Anthropic's Claude API "
                           "for analysis." if uses_claude
                           else "Your deck is processed on this server; no external AI service is used."),
+        # The notice must match what actually happens: with result emails on, every review reaches TEN Capital,
+        # and the checkbox governs only the uploader's contact details and lead record.
+        "{{CONSENT_TEXT}}": (
+            "<strong>Include my contact details.</strong> Adds your email address and a structured lead record to "
+            "the review TEN Capital receives, so the team can follow up. Leave unchecked to stay anonymous."
+            if settings.email_configured() else
+            "<strong>Share the result with TEN Capital.</strong> Sends a structured record of this analysis "
+            "(company, scores, red flags, diligence questions and your email). Leave unchecked to keep it private."),
+        "{{SHARING_NOTE}}": (
+            "Every completed review (PDF and summary) is emailed to the TEN Capital team; your email address is "
+            "included only if you tick the box above." if settings.email_configured()
+            else "Nothing is shared with TEN Capital unless you tick the box above."),
     }
 
     @app.get("/", response_class=HTMLResponse)

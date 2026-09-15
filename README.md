@@ -359,6 +359,38 @@ Diligence questions and the investor conclusion are kept at every level. If cont
 
 ---
 
+## Automated result emails
+
+Every completed analysis, from the web app or the CLI, is emailed through [Resend](https://resend.com) to `TDIP_REPORT_EMAIL_TO`. The default recipient is `Info@tencapital.group`.
+
+Each email contains:
+- a branded summary: score, evidence confidence, maturity, positions, readiness, conclusion, top risks, priority diligence questions, company snapshot and run details;
+- attachments: the one-page PDF and the structured analysis JSON.
+
+What the uploader's consent checkbox changes:
+
+| | Consent not granted | Consent granted |
+|---|---|---|
+| Summary, PDF, analysis JSON | Included | Included |
+| Uploader's email address | Withheld | Included |
+| Reply-To header (answering reaches the uploader) | Not set | Set to the uploader's email |
+| TEN Capital lead record JSON | Not attached | Attached |
+
+The upload page states this up front whenever emails are configured.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `RESEND_API_KEY` | — | Resend API key. Without it, no email is sent |
+| `TDIP_REPORT_EMAIL_TO` | `Info@tencapital.group` | Recipients (comma-separated) |
+| `TDIP_REPORT_EMAIL_FROM` | `TEN Capital Tech & IP Diligence <reports@tencapital.group>` | Sender. The domain must be verified in Resend |
+| `TDIP_EMAIL_REPORTS` | `true` | Set `false` to switch emails off without removing the key |
+
+Delivery is best-effort:
+- A failed send is logged (`railway logs`), and the analysis and downloads still complete.
+- Each email uses the record ID as an idempotency key, so a retry cannot deliver the same email twice.
+- To skip the email for a single CLI run, use `--no-email`.
+- The test suite removes `RESEND_API_KEY` from its environment, so tests never send real email.
+
 ## TEN Capital record and consent
 
 The record contains:

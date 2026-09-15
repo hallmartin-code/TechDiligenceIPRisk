@@ -1,4 +1,4 @@
-"""End-to-end run: ingest -> analyze -> validate -> one-page PDF -> JSON -> TEN Capital record.
+"""End-to-end run: ingest -> analyze -> validate -> one-page PDF -> JSON -> TEN Capital record -> result email.
 
 Used identically by the CLI and the web server, so both produce the same files
 from the same deck.
@@ -16,6 +16,7 @@ import httpx
 from app.analysis.engine import analyze_deck
 from app.config import Settings, get_settings
 from app.ingestion.extractor import load_deck
+from app.integrations.email_report import EmailResult, EmailStatus, send_report_email
 from app.integrations.ten_capital import (
     ConsentStatus,
     SubmissionResult,
@@ -45,6 +46,7 @@ class DiligenceRun:
     record: TenCapitalRecord
     submission: SubmissionResult
     validation_warnings: list[str] = field(default_factory=list)
+    email: EmailResult | None = None
 
 
 def run_diligence(
@@ -58,6 +60,8 @@ def run_diligence(
     client: Any | None = None,
     transport: httpx.BaseTransport | None = None,
     progress: Callable[[int, str], None] | None = None,
+    send_email: bool = True,
+    email_transport: httpx.BaseTransport | None = None,
 ) -> DiligenceRun:
     settings = settings or get_settings()
     deck_path = Path(deck_path)
@@ -90,5 +94,12 @@ def run_diligence(
     record = record.model_copy(update={"transmission_status": submission.status})
     record_path = write_record(record, out / f"{stem}_ten_capital_record.json")
 
+    if send_email:
+        email = send_report_email(analysis, record, pdf_path=pdf_path, analysis_path=analysis_path,
+                                  record_path=record_path, settings=settings, transport=email_transport)
+    else:
+        email = EmailResult(status=EmailStatus.DISABLED, detail="Result email skipped for this run.")
+    log.info("Result email: %s", email.detail)
+
     return DiligenceRun(analysis=analysis, pdf_path=pdf_path, analysis_path=analysis_path, record_path=record_path,
-                        record=record, submission=submission, validation_warnings=warnings)
+                        record=record, submission=submission, validation_warnings=warnings, email=email)

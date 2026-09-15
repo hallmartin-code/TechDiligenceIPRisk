@@ -13,7 +13,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -29,7 +29,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional convenience
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="TDIP_", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="TDIP_", extra="ignore", populate_by_name=True)
 
     # Analysis engine: "auto" uses Claude when credentials exist, else rules.
     engine: Literal["auto", "llm", "rules"] = "auto"
@@ -63,6 +63,14 @@ class Settings(BaseSettings):
     ten_capital_timeout_seconds: float = Field(default=15.0, gt=0)
     default_user: str | None = None
 
+    # Automated result emails via Resend: every completed analysis goes to report_email_to.
+    resend_api_key: SecretStr | None = Field(
+        default=None, validation_alias=AliasChoices("RESEND_API_KEY", "TDIP_RESEND_API_KEY", "resend_api_key"))
+    email_reports: bool = True
+    report_email_to: str = "Info@tencapital.group"
+    report_email_from: str = "TEN Capital Tech & IP Diligence <reports@tencapital.group>"
+    resend_timeout_seconds: float = Field(default=20.0, gt=0)
+
     # Web server. Set app_password on any public deployment: every upload spends API credits.
     app_password: SecretStr | None = None
     web_host: str = "127.0.0.1"
@@ -71,12 +79,16 @@ class Settings(BaseSettings):
     web_job_ttl_minutes: int = Field(default=60, ge=1)
 
     @field_validator("ten_capital_endpoint", "soffice_path", "default_user", "app_password", "ten_capital_api_key",
-                     mode="before")
+                     "resend_api_key", mode="before")
     @classmethod
     def _blank_is_none(cls, value: object) -> object:
         if isinstance(value, str) and not value.strip():
             return None
         return value
+
+    def email_configured(self) -> bool:
+        key = self.resend_api_key.get_secret_value().strip() if self.resend_api_key else ""
+        return self.email_reports and bool(key) and bool(self.report_email_to.strip())
 
     def llm_credentials_available(self) -> bool:
         return bool(

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -9,7 +10,19 @@ from app.config import Settings
 from app.ingestion.extractor import load_deck
 from samples.mock_decks import RISKY_COMPANY, STRONG_COMPANY, DeckSpec, SlideSpec, build_pdf, build_pptx
 
-RULES = Settings(engine="rules", ten_capital_endpoint=None, ten_capital_api_key=None, default_user=None)
+# Importing app.config loads .env into the environment. Tests must never send real result emails,
+# so the Resend key is removed before any Settings object reads it.
+os.environ.pop("RESEND_API_KEY", None)
+os.environ.pop("TDIP_RESEND_API_KEY", None)
+
+RULES = Settings(engine="rules", ten_capital_endpoint=None, ten_capital_api_key=None, default_user=None,
+                 resend_api_key=None)
+
+
+@pytest.fixture(autouse=True)
+def _no_real_email(monkeypatch):
+    monkeypatch.delenv("RESEND_API_KEY", raising=False)
+    monkeypatch.delenv("TDIP_RESEND_API_KEY", raising=False)
 
 
 @pytest.fixture(scope="session")
