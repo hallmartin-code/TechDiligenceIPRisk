@@ -19,6 +19,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 LOGO_PATH = ASSETS_DIR / "TEN_Capital_logo_footer.png"
+MARK_PATH = ASSETS_DIR / "TEN_Capital_mark.png"
 
 try:  # Loaded here so the Anthropic SDK also sees ANTHROPIC_API_KEY from .env.
     from dotenv import load_dotenv

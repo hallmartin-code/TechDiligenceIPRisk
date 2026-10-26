@@ -41,6 +41,7 @@ def test_index_page_uses_ten_capital_design(client):
     consent_input = re.search(r'<input[^>]*id="consent"[^>]*>', html).group(0)
     assert "checked" not in consent_input  # consent is never pre-selected
     assert client.get("/assets/logo.png").status_code == 200
+    assert client.get("/assets/mark.png").status_code == 200
 
 
 def test_upload_without_consent_keeps_record_local(client, risky_pdf):

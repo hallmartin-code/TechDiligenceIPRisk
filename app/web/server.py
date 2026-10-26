@@ -32,7 +32,7 @@ from fastapi.staticfiles import StaticFiles
 import httpx
 
 from app.analysis.engine import AnalysisError
-from app.config import LOGO_PATH, Settings, get_settings
+from app.config import LOGO_PATH, MARK_PATH, Settings, get_settings
 from app.ingestion.errors import DeckIngestionError
 from app.models.schemas import Severity
 from app.integrations.ten_capital import resolve_consent
@@ -183,6 +183,10 @@ def create_app(settings: Settings | None = None, transport: httpx.BaseTransport 
     @app.get("/assets/logo.png")
     def logo() -> FileResponse:
         return FileResponse(LOGO_PATH, media_type="image/png")
+
+    @app.get("/assets/mark.png")
+    def mark() -> FileResponse:
+        return FileResponse(MARK_PATH, media_type="image/png")
 
     @app.get("/healthz")
     def health() -> dict[str, str]:
